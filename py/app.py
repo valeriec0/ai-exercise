@@ -1,6 +1,7 @@
 import os
 import openai
-from flask import Flask, request
+import requests
+from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,9 +10,37 @@ app = Flask(__name__)
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-@app.route('/')
-def hello_world():
-    prompt = "Hello, GPT-3!"
+def create_github_issue(title, body):
+    # Set the API endpoint for creating issues
+    # url = "https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO/issues"
+    url = "https://api.github.com/repos/valeriec0/ai-exercise/issues"
+
+    # Set the headers for the API request (including your personal access token)
+    headers = {
+        "Authorization": f"Bearer {os.environ.get('GITHUB_API_TOKEN')}"
+    }
+
+    # Set the data for the issue (title and body)
+    data = {
+        "title": title,
+        "body": body
+    }
+
+    # Make the API request to create the issue
+    response = requests.post(url, headers=headers, json=data)
+
+    # Check the status code of the API response and print a message accordingly
+    if response.status_code == 201:
+        print("Github issue created successfully!")
+    else:
+        print("Error creating Github issue:", response.content)
+
+@app.route('/', methods=['POST'])
+def generate_text():
+    data = request.get_json()
+    prompt = data.get('prompt', '')
+    title = f"New prompt: {prompt}"
+    print(title)
     response = openai.Completion.create(
         engine="text-davinci-002",
         prompt=prompt,
@@ -21,7 +50,9 @@ def hello_world():
         temperature=0.5,
     )
     message = response.choices[0].text.strip()
-    return message
+    body = f"Prompt: {prompt}\n\nGenerated text: {message}"
+    create_github_issue(title, body)
+    return jsonify({'message': message})
 
 if __name__ == '__main__':
     app.run()
