@@ -39,17 +39,15 @@ def create_github_issue(title, body):
 def generate_text():
     data = request.get_json()
     prompt = data.get('prompt', '')
-    title = f"New prompt: {prompt}"
-    print(title)
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=prompt,
-        max_tokens=50,
-        n=1,
-        stop=None,
-        temperature=0.5,
+    title = f"New prompt: {prompt[:10]}"
+    # https://platform.openai.com/docs/api-reference/chat/create
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
     )
-    message = response.choices[0].text.strip()
+    message = completion.choices[0].message.content
     body = f"Prompt: {prompt}\n\nGenerated text: {message}"
     create_github_issue(title, body)
     return jsonify({'message': message})
