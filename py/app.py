@@ -35,22 +35,75 @@ def create_github_issue(title, body):
     else:
         print("Error creating Github issue:", response.content)
 
+def get_title_prompt(problem):
+    return """I have a PROBLEM and want to generate a short title to file a Github issue for this problem
+
+Please generate a title for the issue no more than 100 characters
+
+PROBLEM:
+""" + problem
+
+def get_issue_prompt(problem):
+    return """I have a PROBLEM, can you generate a github issue with the following ISSUE TEMPLATE:
+
+ISSUE TEMPLATE:
+## *Who* is the bug affecting?
+<!-- Ex. All supervisors, Sally Supervisor, Level 1 CCs -->
+
+## *What* is affected by this bug?
+<!-- Ex. supervision, sending messages, texter profiles -->
+
+## *When* does this occur?
+<!-- Ex. After ending a conversation, every night at 3pm, when I sign off -->
+
+## *Where* on the platform does it happen?
+<!-- Ex. In the a Supervisor chat box, on the conversation profile page, on the two-factor screen -->
+
+
+## *How* do we replicate the issue?
+<!-- Please be specific as possible. Use dashes (-) or numbers (1.) to create a list of steps -->
+
+
+## Expected behavior (i.e. solution)
+<!-- What should have happened? -->
+
+
+## Other Comments
+
+PROBLEM:
+    """ + problem
+
 @app.route('/', methods=['POST'])
 def generate_text():
     data = request.get_json()
-    prompt = data.get('prompt', '')
-    title = f"New prompt: {prompt[:10]}"
+    problem = data.get('problem', '')
+    title_prompt = get_title_prompt(problem)
+    issue_prompt = get_issue_prompt(problem)
     # https://platform.openai.com/docs/api-reference/chat/create
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": title_prompt}
         ],
     )
-    message = completion.choices[0].message.content
-    body = f"Prompt: {prompt}\n\nGenerated text: {message}"
-    create_github_issue(title, body)
-    return jsonify({'message': message})
+    title = completion.choices[0].message.content
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": issue_prompt}
+        ],
+    )
+    body = completion.choices[0].message.content
+    body_with_problem = f"""{body}
+<br/><br/>
+## Logs
+
+```
+{problem}
+```
+"""
+    create_github_issue(title, body_with_problem)
+    return jsonify({'title': title, 'body': body_with_problem})
 
 if __name__ == '__main__':
     app.run()
