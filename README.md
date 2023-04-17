@@ -5,7 +5,7 @@ This project uses OpenAI’s API to
 2. fill out a new Github issue markdown based on [this template](https://github.com/stevemao/github-issue-templates/blob/master/questions-answers/ISSUE_TEMPLATE.md).
 3. file the Github Issue using Github's API as a new issue in this project
  
-The inspiration comes from real experiences of investigating developer issues and escalating the problem to the appropriate engineering team in Jira. This project should automate some of these tasks for simple bugs. At the very least, it gives Support Engineers a template to streamline creating issues. This enables Support Engineers to more efficiently draft and create Issues that need to be addressed. It can also help suggest where the problems occur and what potential steps users can do the address the issue.
+The inspiration comes from real experiences of investigating developer issues and escalating the problem to the appropriate engineering team in Jira. This project should automate some of these tasks for simple bugs. At the very least, it gives Support Engineers a template to streamline creating issues. This enables Support Engineers to more efficiently draft and create Issues that need to be addressed. It can also help suggest where the problems occur and what potential steps users can do to address the issue.
 
 I used ChatGPT for all stages of the project, from
 1. creating a simple Python Hello World web application
@@ -20,7 +20,7 @@ This project has [several issues filed](https://github.com/valeriec0/ai-exercise
 
 # Future
 
-A future extension of this project that I could finish using just ChatGPT is build a Chrome extension to trigger the web endpoint based on whatever text is highlighted. This would enable users to create issues from any logging service in their web browser and to select which type of Github issue template to file (currently, we only support 1 template). I attempted this, but ran into configuration issues and issues where the extension could not pick up the highlighted text. The code is currently excluded from this project.
+A future extension of this project that I could not finish using just ChatGPT is build a Chrome extension to trigger the web endpoint based on whatever text is highlighted. This would enable users to create issues from any logging service in their web browser and to select which type of Github issue template to file (currently, we only support 1 template). I attempted this, but ran into configuration issues and issues where the extension could not pick up the highlighted text. The code is currently excluded from this project.
 
 We can also give users of the API the ability to change the temperature and preview the issue before filing it.
 
