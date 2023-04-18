@@ -22,7 +22,7 @@ This project has [several issues filed](https://github.com/valeriec0/ai-exercise
 
 A future extension of this project that I could not finish using just ChatGPT is build a Chrome extension to trigger the web endpoint based on whatever text is highlighted. This would enable users to create issues from any logging service in their web browser and to select which type of Github issue template to file (currently, we only support 1 template). I attempted this, but ran into configuration issues and issues where the extension could not pick up the highlighted text. The code is currently excluded from this project.
 
-We can also give users of the API the ability to change the temperature and preview the issue before filing it.
+I can also give users of the API the ability to change the temperature and preview the issue before filing it.
 
 # Installation
 
